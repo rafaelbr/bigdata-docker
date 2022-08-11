@@ -1,0 +1,251 @@
+version: "3.6"
+volumes:
+  shared-workspace:
+    name: "hadoop-distributed-file-system"
+    driver: local
+  hadoop-datanode-volume:
+    name: "hadoop-datanode-volume"
+    driver: local
+  hadoop-namenode-volume:
+    name: "hadoop-namenode-volume"
+    driver: local
+  hadoop-datanode-volume2:
+    name: "hadoop-namenode-volume2"
+    driver: local
+services:  
+  kudu-master:
+    image: parrotstream/kudu:1.7.0-cdh5.15.1
+    container_name: kudu
+    hostname: kudu
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.10
+    ports:
+      - 7051
+      - 8051 
+    cap_add:
+      - SYS_TIME      
+    environment:
+      KUDU_MASTER: "true"     
+  kudu-tserver:
+    image: parrotstream/kudu:1.7.0-cdh5.15.1
+    container_name: kudu-tserver
+    hostname: kudu-tserver1
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.11
+    cap_add:
+      - SYS_TIME
+    environment:
+      KUDU_MASTER: "false"
+    ports:
+      - 8050
+      - 7050      
+    depends_on:
+      - kudu-master   
+  kudu-tserver-2:
+    image: parrotstream/kudu:1.7.0-cdh5.15.1
+    container_name: kudu-tserver-2
+    hostname: kudu-tserver2
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.12
+    environment:
+      KUDU_MASTER: "false"
+    cap_add:
+      - SYS_TIME
+    ports:
+      - 8050
+      - 7050      
+    depends_on:
+      - kudu-master   
+  zookeeper:
+    image: zookeeper
+    container_name: zookeeper
+    hostname: zookeeper
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.13
+    ports:
+      - 2181      
+  kafka-server:
+    image: kafka-server
+    container_name: kafka-server
+    hostname: kafka-server
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.14
+    ports:
+      - 9092
+      - 29092
+    depends_on:
+      - zookeeper
+  hadoop-namenode:
+    image: hadoop-namenode
+    container_name: hadoop
+    hostname: hadoop
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.15
+    ports:
+      - 9870
+      - 9000
+      - 50070
+      - 8020    
+    volumes:
+      - hadoop-namenode-volume:/hadoop/dfs/name
+  hadoop-datanode:
+    image: hadoop-datanode
+    container_name: hadoop-datanode
+    hostname: hadoop-datanode
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.16
+    ports:
+      - 9864 
+      - 50010  
+    volumes:
+      - hadoop-datanode-volume:/hadoop/dfs/data
+    depends_on:
+      - hadoop-namenode  
+  hadoop-nodemanager:
+    image: hadoop-nodemanager
+    container_name: hadoop-nodemanager
+    hostname: hadoop-nm
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.17
+    ports:
+      - 8042    
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+  hadoop-resourcemanager:
+    image: hadoop-resourcemanager
+    container_name: hadoop-resourcemanager
+    hostname: hadoop-rm
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.18
+    ports:
+      - 8088
+      - 8030
+      - 8031
+      - 8032
+      - 8033
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hadoop-nodemanager
+  spark-master:
+    image: spark-master
+    container_name: spark-master
+    hostname: spark-master
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.19
+    ports:
+      - 8080
+      - 7077   
+      - 4040 
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hadoop-resourcemanager
+  spark-worker-1:
+    image: spark-worker
+    container_name: spark-worker-1
+    hostname: spark-worker1
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.20
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8081
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+      - hadoop-namenode
+      - hadoop-datanode
+      - hadoop-resourcemanager
+  spark-worker-2:
+    image: spark-worker
+    container_name: spark-worker-2
+    hostname: spark-worker2
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.21
+    environment:
+      - SPARK_WORKER_CORES=1
+      - SPARK_WORKER_MEMORY=512m
+    ports:
+      - 8082    
+    volumes:
+      - shared-workspace:/opt/workspace
+    depends_on:
+      - spark-master
+      - hadoop-namenode
+      - hadoop-datanode
+      - hadoop-resourcemanager
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    hostname: mysql
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.22
+    ports:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=hive    
+  hive:
+    image: hive
+    container_name: hive
+    hostname: hive
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.23
+    ports:
+      - 9083    
+    depends_on:
+      - hadoop-namenode
+      - mysql
+  impala:
+    image: parrotstream/impala-kudu
+    container_name: impala  
+    hostname: impala
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.24  
+    ports:
+    - 21000
+    - 21050
+    - 25000
+    - 25010
+    - 25020    
+    environment:
+      IMPALA_STATE_STORE: "false"
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hadoop-nodemanager
+      - hadoop-resourcemanager
+      - kudu-master
+      - kudu-tserver
+      - zookeeper
+      - mysql
+      - hive 
+networks:
+  cluster:
+    # use the bridge driver, but enable IPv6
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.1.1.0/24
+          gateway: 172.1.1.1
