@@ -2,8 +2,8 @@ FROM hadoop-base
 
 ARG hive_version=2.3.6
 
-RUN curl http://archive.apache.org/dist/hive/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz hive.tar.gz && \
-	curl https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.tar.gz mysql-connector-java.tar.gz && \
+RUN curl http://archive.apache.org/dist/hive/hive-${hive_version}/apache-hive-${hive_version}-bin.tar.gz -o hive.tar.gz && \
+	curl -L https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.30.tar.gz -o mysql-connector-java.tar.gz && \
 	tar xvf hive.tar.gz && \
 	tar xvf mysql-connector-java.tar.gz && \
 	mkdir /warehouse && \

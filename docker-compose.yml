@@ -12,60 +12,26 @@ volumes:
   hadoop-datanode-volume2:
     name: "hadoop-namenode-volume2"
     driver: local
+  kudu-master-data:
+    name: "kudu-master-data"
+    driver: local
+  kudu-tserver1-data:
+    name: "kudu-tserver1-data"
+    driver: local
+  kudu-tserver2-data:
+    name: "kudu-tserver2-data"
+    driver: local
+  kudu-tserver3-data:
+    name: "kudu-tserver3-data"
+    driver: local
 services:  
-  kudu-master:
-    image: parrotstream/kudu:1.7.0-cdh5.15.1
-    container_name: kudu
-    hostname: kudu
-    networks:
-      cluster:
-        ipv4_address: 172.1.1.10
-    ports:
-      - 7051
-      - 8051 
-    cap_add:
-      - SYS_TIME      
-    environment:
-      KUDU_MASTER: "true"     
-  kudu-tserver:
-    image: parrotstream/kudu:1.7.0-cdh5.15.1
-    container_name: kudu-tserver
-    hostname: kudu-tserver1
-    networks:
-      cluster:
-        ipv4_address: 172.1.1.11
-    cap_add:
-      - SYS_TIME
-    environment:
-      KUDU_MASTER: "false"
-    ports:
-      - 8050
-      - 7050      
-    depends_on:
-      - kudu-master   
-  kudu-tserver-2:
-    image: parrotstream/kudu:1.7.0-cdh5.15.1
-    container_name: kudu-tserver-2
-    hostname: kudu-tserver2
-    networks:
-      cluster:
-        ipv4_address: 172.1.1.12
-    environment:
-      KUDU_MASTER: "false"
-    cap_add:
-      - SYS_TIME
-    ports:
-      - 8050
-      - 7050      
-    depends_on:
-      - kudu-master   
   zookeeper:
     image: zookeeper
     container_name: zookeeper
     hostname: zookeeper
     networks:
       cluster:
-        ipv4_address: 172.1.1.13
+        ipv4_address: 172.1.1.14
     ports:
       - 2181      
   kafka-server:
@@ -74,19 +40,19 @@ services:
     hostname: kafka-server
     networks:
       cluster:
-        ipv4_address: 172.1.1.14
+        ipv4_address: 172.1.1.15
     ports:
       - 9092
       - 29092
     depends_on:
-      - zookeeper
+      - zookeeper    
   hadoop-namenode:
     image: hadoop-namenode
     container_name: hadoop
     hostname: hadoop
     networks:
       cluster:
-        ipv4_address: 172.1.1.15
+        ipv4_address: 172.1.1.16
     ports:
       - 9870
       - 9000
@@ -100,7 +66,7 @@ services:
     hostname: hadoop-datanode
     networks:
       cluster:
-        ipv4_address: 172.1.1.16
+        ipv4_address: 172.1.1.17
     ports:
       - 9864 
       - 50010  
@@ -114,7 +80,7 @@ services:
     hostname: hadoop-nm
     networks:
       cluster:
-        ipv4_address: 172.1.1.17
+        ipv4_address: 172.1.1.18
     ports:
       - 8042    
     depends_on:
@@ -126,7 +92,7 @@ services:
     hostname: hadoop-rm
     networks:
       cluster:
-        ipv4_address: 172.1.1.18
+        ipv4_address: 172.1.1.19
     ports:
       - 8088
       - 8030
@@ -137,13 +103,75 @@ services:
       - hadoop-namenode
       - hadoop-datanode
       - hadoop-nodemanager
+  kudu-master:
+    image: rafaelbr/kudu-master
+    container_name: kudu
+    hostname: kudu
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.10
+    ports:
+      - 7051
+      - 8051 
+    cap_add:
+      - SYS_TIME 
+    volumes:
+      - kudu-master-data:/var/lib/kudu/master   
+  kudu-tserver:
+    image: rafaelbr/kudu-tserver
+    container_name: kudu-tserver
+    hostname: kudu-tserver1
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.11
+    cap_add:
+      - SYS_TIME
+    volumes:
+      - kudu-tserver1-data:/var/lib/kudu/tserver 
+    ports:
+      - 8050
+      - 7050      
+    depends_on:
+      - kudu-master   
+  kudu-tserver-2:
+    image: rafaelbr/kudu-tserver
+    container_name: kudu-tserver-2
+    hostname: kudu-tserver2
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.12
+    cap_add:
+      - SYS_TIME
+    ports:
+      - 8050
+      - 7050      
+    depends_on:
+      - kudu-master
+    volumes:
+      - kudu-tserver2-data:/var/lib/kudu/tserver 
+  kudu-tserver-3:
+    image: rafaelbr/kudu-tserver
+    container_name: kudu-tserver-3
+    hostname: kudu-tserver3
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.13
+    cap_add:
+      - SYS_TIME
+    ports:
+      - 8050
+      - 7050      
+    depends_on:
+      - kudu-master
+    volumes:
+      - kudu-tserver3-data:/var/lib/kudu/tserver   
   spark-master:
     image: spark-master
     container_name: spark-master
     hostname: spark-master
     networks:
       cluster:
-        ipv4_address: 172.1.1.19
+        ipv4_address: 172.1.1.20
     ports:
       - 8080
       - 7077   
@@ -160,7 +188,7 @@ services:
     hostname: spark-worker1
     networks:
       cluster:
-        ipv4_address: 172.1.1.20
+        ipv4_address: 172.1.1.21
     environment:
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=512m
@@ -179,7 +207,7 @@ services:
     hostname: spark-worker2
     networks:
       cluster:
-        ipv4_address: 172.1.1.21
+        ipv4_address: 172.1.1.22
     environment:
       - SPARK_WORKER_CORES=1
       - SPARK_WORKER_MEMORY=512m
@@ -198,7 +226,7 @@ services:
     hostname: mysql
     networks:
       cluster:
-        ipv4_address: 172.1.1.22
+        ipv4_address: 172.1.1.23
     ports:
       - 3306
     environment:
@@ -209,7 +237,7 @@ services:
     hostname: hive
     networks:
       cluster:
-        ipv4_address: 172.1.1.23
+        ipv4_address: 172.1.1.24
     ports:
       - 9083    
     depends_on:
@@ -221,7 +249,7 @@ services:
     hostname: impala
     networks:
       cluster:
-        ipv4_address: 172.1.1.24  
+        ipv4_address: 172.1.1.25  
     ports:
     - 21000
     - 21050

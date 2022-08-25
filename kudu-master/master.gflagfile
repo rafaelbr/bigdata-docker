@@ -1,0 +1,6 @@
+--unlock_unsafe_flags
+--webserver_doc_root=/opt/kudu/kudu_webroot
+--time_source=system_unsync
+--fs_data_dirs=/var/lib/kudu/master
+--fs_metadata_dir=/var/lib/kudu/master
+--fs_wal_dir=/var/lib/kudu/master
