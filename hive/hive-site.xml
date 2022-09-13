@@ -22,7 +22,19 @@
 		<value>hdfs://hadoop:8020/warehouse</value>
 	</property>
 	<property>
+		<name>hive.metastore.catalog.default</name>
+		<value>hive</value>
+	</property>
+	<property>
 		<name>dfs.webhdfs.enabled</name>
 		<value>true</value>
 	</property>
+	<property>
+        <name>hive.metastore.event.db.notification.api.auth</name>
+        <value>false</value>
+    </property>
+    <property>
+        <name>hive.metastore.dml.events</name>
+        <value>true</value>
+    </property>    
 </configuration>

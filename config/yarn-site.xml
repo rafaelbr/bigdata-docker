@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+
+NOTE: THIS FILE IS AUTO-GENERATED FROM:
+  /opt/apache-impala-4.1.0/testdata/cluster/cdh7/node-1/etc/hadoop/conf/yarn-site.xml.py
+
+EDITS BY HAND WILL BE LOST!
+
+-->
+<configuration>
+      <property>
+        <name>yarn.application.classpath</name>
+        <value>$HADOOP_CONF_DIR,$HADOOP_COMMON_HOME/share/hadoop/common/*,$HADOOP_COMMON_HOME/share/hadoop/common/lib/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/*,$HADOOP_HDFS_HOME/share/hadoop/hdfs/lib/*,$HADOOP_YARN_HOME/share/hadoop/yarn/*,$HADOOP_YARN_HOME/share/hadoop/yarn/lib/*,/opt/apache-impala-4.1.0/toolchain/cdp_components-23144489/tez-0.9.1.7.2.15.0-88-minimal/*,/opt/apache-impala-4.1.0/toolchain/cdp_components-23144489/tez-0.9.1.7.2.15.0-88-minimal/lib/*</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.address</name>
+        <value>localhost:31102</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services</name>
+        <value>mapreduce_shuffle</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.local-dirs</name>
+        <value>/opt/apache-impala-4.1.0/testdata/cluster/cdh7/node-1/var/lib/hadoop-yarn/cache/root/nm-local-dir</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.localizer.address</name>
+        <value>localhost:31122</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.log-dirs</name>
+        <value>/opt/apache-impala-4.1.0/testdata/cluster/cdh7/node-1/var/log/hadoop-yarn/containers</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.resource.memory-mb</name>
+        <value>4096</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.vmem-check-enabled</name>
+        <value>false</value>
+      </property>
+      <property>
+        <name>yarn.nodemanager.webapp.address</name>
+        <value>localhost:31142</value>
+      </property>
+      <property>
+        <name>yarn.resourcemanager.webapp.address</name>
+        <value>0.0.0.0:8088</value>
+      </property>
+</configuration>

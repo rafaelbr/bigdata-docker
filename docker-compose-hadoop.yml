@@ -1,0 +1,93 @@
+version: "3.6"
+volumes:
+  shared-workspace:
+    name: "hadoop-distributed-file-system"
+    driver: local
+  hadoop-datanode-volume:
+    name: "hadoop-datanode-volume"
+    driver: local
+  hadoop-namenode-volume:
+    name: "hadoop-namenode-volume"
+    driver: local
+  hadoop-datanode-volume2:
+    name: "hadoop-namenode-volume2"
+    driver: local
+  kudu-master-data:
+    name: "kudu-master-data"
+    driver: local
+  kudu-tserver1-data:
+    name: "kudu-tserver1-data"
+    driver: local
+  kudu-tserver2-data:
+    name: "kudu-tserver2-data"
+    driver: local
+  kudu-tserver3-data:
+    name: "kudu-tserver3-data"
+    driver: local
+services:     
+  hadoop-namenode:
+    image: hadoop-namenode
+    container_name: hadoop
+    hostname: hadoop
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.16
+    ports:
+      - 9870
+      - 9000
+      - 50070
+      - 8020    
+    volumes:
+      - hadoop-namenode-volume:/hadoop/dfs/name
+  hadoop-datanode:
+    image: hadoop-datanode
+    container_name: hadoop-datanode
+    hostname: hadoop-datanode
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.17
+    ports:
+      - 9864 
+      - 50010  
+    volumes:
+      - hadoop-datanode-volume:/hadoop/dfs/data
+    depends_on:
+      - hadoop-namenode  
+  hadoop-nodemanager:
+    image: hadoop-nodemanager
+    container_name: hadoop-nodemanager
+    hostname: hadoop-nm
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.18
+    ports:
+      - 8042    
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+  hadoop-resourcemanager:
+    image: hadoop-resourcemanager
+    container_name: hadoop-resourcemanager
+    hostname: hadoop-rm
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.19
+    ports:
+      - 8088
+      - 8030
+      - 8031
+      - 8032
+      - 8033
+    depends_on:
+      - hadoop-namenode
+      - hadoop-datanode
+      - hadoop-nodemanager  
+networks:
+  cluster:
+    # use the bridge driver, but enable IPv6
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.1.1.0/24
+          gateway: 172.1.1.1

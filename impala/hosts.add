@@ -1,0 +1,16 @@
+172.1.1.10	kudu
+172.1.1.11	kudu-tserver1
+172.1.1.12 	kudu-tserver2
+172.1.1.13 	kudu-tserver3
+172.1.1.14	zookeeper
+172.1.1.15	kafka-server
+172.1.1.16	hadoop
+172.1.1.17	hadoop-datanode
+172.1.1.18 	hadoop-nm
+172.1.1.19	hadoop-rm
+172.1.1.20	spark-master
+172.1.1.21	spark-worker1
+172.1.1.22 	spark-worker2
+172.1.1.23	mysql
+172.1.1.24	hive
+#172.1.1.25	impala

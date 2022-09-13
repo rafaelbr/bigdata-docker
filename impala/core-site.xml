@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+<!--
+
+NOTE: THIS FILE IS AUTO-GENERATED FROM:
+  /opt/apache-impala-4.1.0/testdata/cluster/cdh7/node-1/etc/hadoop/conf/core-site.xml.py
+
+EDITS BY HAND WILL BE LOST!
+
+-->
+<configuration>
+      <property>
+        <name>dfs.adls.oauth2.access.token.provider.type</name>
+        <value>ClientCredential</value>
+      </property>
+      <property>
+        <name>dfs.adls.oauth2.client.id</name>
+        <value>DummyAdlsClientId</value>
+      </property>
+      <property>
+        <name>dfs.adls.oauth2.credential</name>
+        <value>DummyAdlsClientSecret</value>
+      </property>
+      <property>
+        <name>dfs.adls.oauth2.refresh.url</name>
+        <value>https://login.windows.net/DummyAdlsTenantId/oauth2/token</value>
+      </property>
+      <property>
+        <name>dfs.replication</name>
+        <value>3</value>
+      </property>
+      <property>
+        <name>fs.AbstractFileSystem.cosn.impl</name>
+        <value>org.apache.hadoop.fs.CosN</value>
+      </property>
+      <property>
+        <name>fs.azure.account.auth.type</name>
+        <value>OAuth</value>
+      </property>
+      <property>
+        <name>fs.azure.account.oauth.provider.type</name>
+        <value>org.apache.hadoop.fs.azurebfs.oauth2.ClientCredsTokenProvider</value>
+      </property>
+      <property>
+        <name>fs.azure.account.oauth2.client.endpoint</name>
+        <value>https://login.microsoftonline.com/DummyAdlsTenantId/oauth2/token</value>
+      </property>
+      <property>
+        <name>fs.azure.account.oauth2.client.id</name>
+        <value>DummyAdlsClientId</value>
+      </property>
+      <property>
+        <name>fs.azure.account.oauth2.client.secret</name>
+        <value>DummyAdlsClientSecret</value>
+      </property>
+      <property>
+        <name>fs.cosn.bucket.region</name>
+        <value></value>
+      </property>
+      <property>
+        <name>fs.cosn.impl</name>
+        <value>org.apache.hadoop.fs.CosFileSystem</value>
+      </property>
+      <property>
+        <name>fs.cosn.userinfo.secretId</name>
+        <value></value>
+      </property>
+      <property>
+        <name>fs.cosn.userinfo.secretKey</name>
+        <value></value>
+      </property>
+      <property>
+        <name>fs.defaultFS</name>
+        <value>hdfs://hadoop:8020</value>
+      </property>
+      <property>
+        <name>fs.gs.reported.permissions</name>
+        <value>777</value>
+      </property>
+      <property>
+        <name>fs.s3a.bucket.probe</name>
+        <value>1</value>
+      </property>
+      <property>
+        <name>fs.trash.interval</name>
+        <value>541728000</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.root.groups</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.proxyuser.root.hosts</name>
+        <value>*</value>
+      </property>
+      <property>
+        <name>hadoop.security.auth_to_local</name>
+        <value>RULE:[2:$1@$0](authtest@REALM.COM)s/(.*)@REALM.COM/auth_to_local_user/
+RULE:[1:$1]
+RULE:[2:$1]
+DEFAULT</value>
+      </property>
+      <property>
+        <name>hadoop.security.key.provider.path</name>
+        <value>kms://http@localhost:9600/kms</value>
+      </property>
+      <property>
+        <name>impala.core-site.overridden</name>
+        <value>true</value>
+      </property>
+      <property>
+        <name>io.compression.codecs</name>
+        <value>org.apache.hadoop.io.compress.GzipCodec,org.apache.hadoop.io.compress.DefaultCodec,org.apache.hadoop.io.compress.BZip2Codec</value>
+      </property>
+      <property>
+        <name>yarn.scheduler.include-port-in-node-name</name>
+        <value>true</value>
+      </property>
+</configuration>

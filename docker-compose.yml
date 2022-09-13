@@ -24,7 +24,18 @@ volumes:
   kudu-tserver3-data:
     name: "kudu-tserver3-data"
     driver: local
-services:  
+services: 
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    hostname: mysql
+    networks:
+      cluster:
+        ipv4_address: 172.1.1.23
+    ports:
+      - 3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=hive  
   zookeeper:
     image: zookeeper
     container_name: zookeeper
@@ -219,18 +230,7 @@ services:
       - spark-master
       - hadoop-namenode
       - hadoop-datanode
-      - hadoop-resourcemanager
-  mysql:
-    image: mysql:8.0
-    container_name: mysql
-    hostname: mysql
-    networks:
-      cluster:
-        ipv4_address: 172.1.1.23
-    ports:
-      - 3306
-    environment:
-      - MYSQL_ROOT_PASSWORD=hive    
+      - hadoop-resourcemanager     
   hive:
     image: hive
     container_name: hive
@@ -242,32 +242,17 @@ services:
       - 9083    
     depends_on:
       - hadoop-namenode
-      - mysql
+      - mysql  
   impala:
-    image: parrotstream/impala-kudu
-    container_name: impala  
+    image: impala
+    container_name: impala
     hostname: impala
     networks:
       cluster:
-        ipv4_address: 172.1.1.25  
-    ports:
-    - 21000
-    - 21050
-    - 25000
-    - 25010
-    - 25020    
-    environment:
-      IMPALA_STATE_STORE: "false"
-    depends_on:
-      - hadoop-namenode
-      - hadoop-datanode
-      - hadoop-nodemanager
-      - hadoop-resourcemanager
-      - kudu-master
-      - kudu-tserver
-      - zookeeper
-      - mysql
-      - hive 
+        ipv4_address: 172.1.1.25
+    extra_hosts:
+      - "hive:172.1.1.24"
+      - "hadoop:172.1.1.16"
 networks:
   cluster:
     # use the bridge driver, but enable IPv6

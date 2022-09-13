@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<?xml-stylesheet type="text/xsl" href="configuration.xsl"?>
+
+<configuration>
+  <property>
+    <name>dfs.namenode.http-address</name>
+    <value>hadoop:50070</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.name.dir</name>
+    <value>file:///opt/apache-impala-4.1.0/testdata/cluster/cdh7/node-1/data/dfs/nn</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.data.dir</name>
+    <value>file:///opt/apache-impala-4.1.0/testdata/cluster/cdh7/node-1/data/dfs/dn</value>
+  </property>
+
+  <property>
+    <name>dfs.webhdfs.enabled</name>
+    <value>true</value>
+  </property>
+
+  <!-- The release of Hadoop we're depending on requires an explicit key to allow erasure
+       coding. -->
+  <property>
+    <name>cloudera.erasure_coding.enabled</name>
+    <value>true</value>
+  </property>
+
+  <!-- Datanode to listen on all ports to work around issue where it reports
+  its own IP as something other than INTERNAL_LISTEN_HOST.
+  TODO: we can override this with dfs.datanode.dns.interface if we figure out
+  the interface that it should be listening on.-->
+  <property>
+    <name>dfs.datanode.address</name>
+    <value>0.0.0.0:31002</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.http.address</name>
+    <value>0.0.0.0:31012</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.ipc.address</name>
+    <value>localhost:31022</value>
+  </property>
+
+  <property>
+    <name>dfs.datanode.https.address</name>
+    <value>localhost:31032</value>
+  </property>
+
+  <!-- Configuration to enable disk location metadata -->
+  <property>
+    <name>dfs.datanode.hdfs-blocks-metadata.enabled</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>dfs.client.file-block-storage-locations.timeout</name>
+    <value>3000</value>
+  </property>
+
+  <property>
+    <name>dfs.client.file-block-storage-locations.timeout.millis</name>
+    <value>5000000</value>
+  </property>
+
+  <!-- Configurations to enable short circuit reads -->
+  <property>
+    <name>dfs.client.read.shortcircuit</name>
+    <value>true</value>
+  </property>
+
+  <!-- The HDFS local read socket must be in the same dir for all nodes. All the sockets
+       will be here. Permissions on the parent dirs are strict. -->
+  <property>
+    <name>dfs.domain.socket.path</name>
+    <value>/var/lib/hadoop-hdfs/dn</value>
+  </property>
+
+  <property>
+    <name>dfs.client.read.shortcircuit.skip.checksum</name>
+    <value>false</value>
+  </property>
+
+  <!-- 128MB HDFS block size -->
+  <property>
+    <name>dfs.block.size</name>
+    <value>134217728</value>
+  </property>
+
+  <!-- Decrease this so we can create mini test files across several blocks -->
+  <property>
+    <name>dfs.namenode.fs-limits.min-block-size</name>
+    <value>1024</value>
+  </property>
+
+  <!-- Set the max cached memory to ~64kb. This must be less than ulimit -l -->
+  <property>
+    <name>dfs.datanode.max.locked.memory</name>
+    <value>64000</value>
+  </property>
+
+  <!-- Increase the frequency the NN talks to the DNs to update the caching policy.
+   This is useful to reduce the lag between asking a path to be cached and it actually
+   being cached. -->
+  <property>
+    <name>dfs.namenode.path.based.cache.refresh.interval.ms</name>
+    <value>3000</value>
+  </property>
+
+  <property>
+    <name>dfs.namenode.acls.enabled</name>
+    <value>true</value>
+  </property>
+
+  <!-- The default behavior of the namenode is to exclude datanodes with the number of
+    connections 2x higher than the average among all the datanodes from being considered
+    for replication/EC. In the minicluster we have to use every datanode for every block
+    so this should be disabled. -->
+  <property>
+    <name>dfs.namenode.redundancy.considerLoad</name>
+    <value>false</value>
+  </property>
+
+  <!-- Location of the KMS key provider -->
+  <property>
+    <name>dfs.encryption.key.provider.uri</name>
+    <value>kms://http@localhost:9600/kms</value>
+  </property>
+
+
+
+</configuration>
